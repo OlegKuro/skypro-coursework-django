@@ -1,4 +1,10 @@
 services:
   api:
+    image: test:latest
     volumes:
       - ./..:/code
+  db:
+    ports:
+      - "5432:5432"
+  migrations:
+    image: test:latest

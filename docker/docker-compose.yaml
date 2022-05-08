@@ -13,7 +13,7 @@ services:
   db:
     image: postgres:12.4-alpine
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - ./db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "$DB_USER"
       POSTGRES_PASSWORD: "$DB_PASSWORD"
@@ -24,13 +24,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    ports:
-    - "5432:5432"
     networks:
       - db-network
 
   migrations:
-    image: test:latest
+    image: olegkuro/skypro-hw:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     networks:
       - db-network
     depends_on:
@@ -39,7 +37,7 @@ services:
     command: "./manage.py migrate"
 
   api:
-    image: test:latest
+    image: olegkuro/skypro-hw:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: unless-stopped
     networks:
       - app-network
