@@ -40,4 +40,4 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd skyprohw
-            docker-compose up -d
+            docker-compose up -d && echo "DONE!
