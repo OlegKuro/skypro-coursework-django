@@ -23,7 +23,7 @@ jobs:
           mkdir deploy
           export DB_NAME=${{secrets.DB_NAME}}
           export DB_PASSWORD=${{secrets.DB_PASSWORD}}
-          exprot DB_USER=${{secrets.DB_USER}}
+          export DB_USER=${{secrets.DB_USER}}
           cat docker/docker-compose.yaml | envsubst > deploy/docker-compose.yaml
       - name: clone files to server
         uses: appleboy/scp-action@master
