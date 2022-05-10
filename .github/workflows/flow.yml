@@ -45,4 +45,4 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd skyprohw
-            dkc up -d
+            docker-compose up -d --force-recreate
