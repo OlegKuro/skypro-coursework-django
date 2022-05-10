@@ -1,5 +1,13 @@
 version: '3.8'
 
+x-app-env: &app-env
+  DB_USER: $DB_USER
+  DB_PASSWORD: $DB_PASSWORD
+  DB_NAME: $DB_NAME
+  DB_HOST: $DB_HOST
+  DB_PORT: $DB_PORT
+  DB_ENGINE: $DB_ENGINE
+
 services:
   frontend:
     image: sermalenk/skypro-front:base
@@ -35,12 +43,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DB_USER: $DB_USER
-      DB_PASSWORD: $DB_PASSWORD
-      DB_NAME: $DB_NAME
-      DB_HOST: $DB_HOST
-      DB_PORT: $DB_PORT
-      DB_ENGINE: $DB_ENGINE
+      <<: *app-env
     command: "./manage.py migrate"
 
   api:
@@ -50,12 +53,7 @@ services:
       - app-network
       - db-network
     environment:
-      DB_USER: $DB_USER
-      DB_PASSWORD: $DB_PASSWORD
-      DB_NAME: $DB_NAME
-      DB_HOST: $DB_HOST
-      DB_PORT: $DB_PORT
-      DB_ENGINE: $DB_ENGINE
+      <<: *app-env
     depends_on:
       db:
         condition: service_healthy
