@@ -24,6 +24,8 @@ jobs:
           export DB_NAME=${{secrets.DB_NAME}}
           export DB_PASSWORD=${{secrets.DB_PASSWORD}}
           export DB_USER=${{secrets.DB_USER}}
+          export DB_ENGINE=${{secrets.DB_ENGINGE}}
+          export DB_HOST=${{secrets.DB_HOST}}
           cat docker/docker-compose.yaml | envsubst > deploy/docker-compose.yaml
       - name: clone files to server
         uses: appleboy/scp-action@master
@@ -43,4 +45,4 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd skyprohw
-            docker-compose up -d
+            dkc up -d
