@@ -7,6 +7,7 @@ x-app-env: &app-env
   DB_HOST: $DB_HOST
   DB_PORT: $DB_PORT
   DB_ENGINE: $DB_ENGINE
+  DEBUG: 1
 
 services:
   frontend:
