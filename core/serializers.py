@@ -8,6 +8,17 @@ from django.conf import settings
 from core.models import User
 
 
+class UserLoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(allow_null=False, allow_blank=False)
+    password = serializers.CharField(allow_null=False, allow_blank=False)
+
+    class Meta:
+        model = User
+        fields = (
+            'password',
+            'username',
+        )
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password_repeat = serializers.CharField(write_only=True)
 
