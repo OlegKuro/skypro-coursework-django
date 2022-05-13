@@ -1,4 +1,6 @@
 from django.contrib.auth.backends import BaseBackend
+from rest_framework.authentication import SessionAuthentication
+
 from core.models import User
 
 class UsernamePasswordCookieBackend(BaseBackend):
@@ -16,3 +18,9 @@ class UsernamePasswordCookieBackend(BaseBackend):
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
