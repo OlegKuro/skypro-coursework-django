@@ -3,12 +3,22 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 
-from core.serializers import UserRegistrationSerializer, UserLoginSerializer
+from core.models import User
+from core.serializers import UserRegistrationSerializer, UserLoginSerializer, UserRetrieveUpdateSerializer
+
+
+class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserRetrieveUpdateSerializer
+    queryset = User.objects.all()
+
+    def get_object(self):
+        return self.request.user
 
 
 class RegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = (permissions.AllowAny,)
+
 
 class LoginView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
@@ -25,4 +35,3 @@ class LoginView(generics.CreateAPIView):
             })
         login(request, user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-

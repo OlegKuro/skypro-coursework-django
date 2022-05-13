@@ -8,6 +8,21 @@ from django.conf import settings
 from core.models import User
 
 
+class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+        )
+        extra_kwargs = {
+            'id': {'read_only': True},
+        }
+
+
 class UserLoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField(allow_null=False, allow_blank=False)
     password = serializers.CharField(allow_null=False, allow_blank=False)
@@ -18,6 +33,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
             'password',
             'username',
         )
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password_repeat = serializers.CharField(write_only=True)
