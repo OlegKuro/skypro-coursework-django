@@ -1,18 +1,24 @@
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from core.models import User
-from core.serializers import UserRegistrationSerializer, UserLoginSerializer, UserRetrieveUpdateSerializer
+from core.serializers import UserRegistrationSerializer, UserLoginSerializer, UserRetrieveUpdateSerializer, \
+    UserUpdatePasswordSerializer
 
 
-class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+class UserRetrieveUpdateView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserRetrieveUpdateSerializer
     queryset = User.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self):
         return self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        logout(request)
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
 class RegistrationView(generics.CreateAPIView):
@@ -35,3 +41,12 @@ class LoginView(generics.CreateAPIView):
             })
         login(request, user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UpdatePasswordView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserUpdatePasswordSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user

@@ -8,6 +8,33 @@ from django.conf import settings
 from core.models import User
 
 
+class UserUpdatePasswordSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, validators=[password_validation.validate_password])
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'old_password',
+            'new_password',
+        )
+        extra_kwargs = {
+            'id': {'read_only': True},
+        }
+
+    def validate(self, attrs):
+        old_password = attrs.get('old_password')
+        user: User = self.instance
+        if not user.check_password(old_password):
+            raise ValidationError({'old_password': 'wrong old pass'})
+        return attrs
+
+    def update(self, instance: User, validated_data):
+        instance.set_password(validated_data['new_password'])
+        instance.save(update_fields=['password'])
+        return instance
+
 class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -48,6 +75,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'password',
             'password_repeat',
         )
+        extra_kwargs = {
+            'password': {
+                'validators': [password_validation.validate_password],
+            },
+        }
 
     def validate(self, attrs):
         if 'password_repeat' not in attrs:
@@ -66,15 +98,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         user = super().create(validated_data)
-        password_validators = password_validation.get_password_validators(settings.AUTH_PASSWORD_VALIDATORS)
-        try:
-            password_validation.validate_password(
-                password=validated_data['password'],
-                user=user,
-                password_validators=password_validators,
-            )
-        except CoreValidationError as e:
-            raise ValidationError({'password': [error.messages[0] for error in e.error_list]})
         user.set_password(validated_data['password'])
         user.save()
 
