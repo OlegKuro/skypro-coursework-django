@@ -6,3 +6,6 @@ psycopg2==2.9.3
 python-dotenv==0.20.0
 pytz==2022.1
 sqlparse==0.4.2
+social-auth-app-django==5.0.0
+social-auth-core==4.2.0
+
