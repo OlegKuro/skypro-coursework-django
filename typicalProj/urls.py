@@ -25,6 +25,6 @@ extra = getattr(settings, setting_name('TRAILING_SLASH'), True) and '/' or ''
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('core/', include('core.urls')),
-    path(f'oauth/login/<str:backend>oauth/{extra}', auth),
+    path(f'oauth/login/<str:backend>oauth/{extra}', auth, name='login-social-backend'),
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
