@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from typicalProj.views import do_auth
+from typicalProj.views import auth
 
 from social_core.utils import setting_name
 
@@ -25,6 +25,6 @@ extra = getattr(settings, setting_name('TRAILING_SLASH'), True) and '/' or ''
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('core/', include('core.urls')),
-    path(f'oauth/login/<str:backend>oauth/{extra}', do_auth),
+    path(f'oauth/login/<str:backend>oauth/{extra}', auth),
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
