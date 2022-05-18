@@ -23,8 +23,8 @@ from social_core.utils import setting_name
 extra = getattr(settings, setting_name('TRAILING_SLASH'), True) and '/' or ''
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('core/', include('core.urls')),
-    path(f'oauth/login/<str:backend>{extra}', auth, name='login-social-backend'),
-    path('oauth/', include('social_django.urls', namespace='social')),
+    path('api/admin/', admin.site.urls),
+    path('api/core/', include('core.urls')),
+    path(f'api/oauth/login/<str:backend>{extra}', auth, name='login-social-backend'),
+    path('api/oauth/', include('social_django.urls', namespace='social')),
 ]
