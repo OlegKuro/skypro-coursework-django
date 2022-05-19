@@ -14,8 +14,11 @@ x-app-env: &app-env
 
 services:
   frontend:
-#    image: olegkuro/skypro-front-todo-list:latest
-    build: ./front
+    image: olegkuro/skypro-front-todo-list:latest
+    volumes:
+      - type: bind
+        source: ./front/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     networks:
