@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
 
 PROJECT_APPS = [
     'core',
+    'goals',
 ]
 
 INSTALLED_APPS = [

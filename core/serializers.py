@@ -1,9 +1,7 @@
 from rest_framework import serializers
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
-from django.core.exceptions import ValidationError as CoreValidationError
 from django.contrib.auth import password_validation
-from django.conf import settings
 
 from core.models import User
 
