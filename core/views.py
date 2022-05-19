@@ -25,6 +25,12 @@ class RegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = (permissions.AllowAny,)
 
+    def create(self, request, *args, **kwargs):
+        response: Response = super(RegistrationView, self).create(request, *args, **kwargs)
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        login(request, user)
+        return Response(response.data, status=status.HTTP_201_CREATED)
+
 
 class LoginView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
