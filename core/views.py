@@ -27,8 +27,8 @@ class RegistrationView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response: Response = super(RegistrationView, self).create(request, *args, **kwargs)
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        login(request, user)
+        user = authenticate(request, username=request.data.get('username'), password=request.data.get('password'))
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return Response(response.data, status=status.HTTP_201_CREATED)
 
 
