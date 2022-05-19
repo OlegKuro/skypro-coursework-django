@@ -14,7 +14,7 @@ x-app-env: &app-env
 
 services:
   frontend:
-    image: olegkuro/skypro-front-todo-list:latest
+    image: sermalenk/skypro-front:base
     volumes:
       - type: bind
         source: ./nginx.conf
