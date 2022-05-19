@@ -14,7 +14,8 @@ x-app-env: &app-env
 
 services:
   frontend:
-    image: olegkuro/skypro-front-todo-list:latest
+#    image: olegkuro/skypro-front-todo-list:latest
+    build: ./front
     ports:
       - "80:80"
     networks:
