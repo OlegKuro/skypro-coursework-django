@@ -13,7 +13,7 @@ x-app-env: &app-env
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson_37
+    image: sermalenk/skypro-front:lesson_36
     volumes:
       - type: bind
         source: ./nginx.conf
