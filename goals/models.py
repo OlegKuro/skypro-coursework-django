@@ -1,9 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinLengthValidator
+from django.contrib.postgres.indexes import HashIndex
 
 from core.models import User
 from goals.enums import Status, Priority
+
 
 class HasCreatedUpdatedFieldsMixin(models.Model):
     class Meta:
@@ -30,6 +32,9 @@ class GoalCategory(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        indexes = (
+            HashIndex(fields=('user',)),
+        )
 
     title = models.CharField(verbose_name="Название", max_length=255)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
@@ -47,7 +52,7 @@ class Goal(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
     title = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     due_date = models.DateField(null=True, blank=True)
-    category = models.ForeignKey(to=GoalCategory, related_name='category', related_query_name='category',
+    category = models.ForeignKey(to=GoalCategory, related_name='goals', related_query_name='goals',
                                  verbose_name='Категория', on_delete=models.PROTECT)
     status = models.PositiveSmallIntegerField(
         verbose_name="Статус", choices=Status.choices, default=Status.to_do
@@ -56,8 +61,18 @@ class Goal(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
         verbose_name="Приоритет", choices=Priority.choices, default=Priority.medium
     )
 
+    class Meta:
+        indexes = (
+            HashIndex(fields=('user',)),
+        )
+
 
 class GoalComment(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
     goal = models.ForeignKey(to=Goal, on_delete=models.CASCADE, related_name='comments', related_query_name='comments',
                              verbose_name='Цель')
     text = models.TextField(validators=[MinLengthValidator(1)])
+
+    class Meta:
+        indexes = (
+            HashIndex(fields=('user',)),
+        )

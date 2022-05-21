@@ -1,6 +1,7 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, filters
 from rest_framework.pagination import LimitOffsetPagination
+from django.db.transaction import atomic
 from django_filters.rest_framework import DjangoFilterBackend
 
 from goals.models import GoalCategory, Goal, GoalComment
@@ -43,9 +44,14 @@ class GoalCategoryView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return GoalCategory.objects.filter(user=self.request.user, is_deleted=False)
 
-    def perform_destroy(self, instance):
+    @atomic
+    def perform_destroy(self, instance: GoalCategory):
         instance.is_deleted = True
         instance.save()
+
+        for goal in instance.goals.all():
+            goal.delete()
+
         return instance
 
 
@@ -60,6 +66,9 @@ class GoalView(RetrieveUpdateDestroyAPIView):
     model = Goal
     serializer_class = GoalSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Goal.objects.filter(user=self.request.user)
 
     def perform_destroy(self, instance):
         instance.status = Status.archived
@@ -82,6 +91,9 @@ class GoalListView(ListAPIView):
     ordering_fields = ["due_date", "priority"]
     ordering = ["priority", "due_date"]
 
+    def get_queryset(self):
+        return Goal.objects.filter(user=self.request.user)
+
 
 ## GoalComment views
 class GoalCommentCreateView(CreateAPIView):
@@ -95,6 +107,9 @@ class GoalCommentView(RetrieveUpdateDestroyAPIView):
     serializer_class = GoalCommentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return GoalComment.objects.filter(user=self.request.user)
+
 
 class GoalCommentListView(ListAPIView):
     model = GoalComment
@@ -104,3 +119,7 @@ class GoalCommentListView(ListAPIView):
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_fields = ["goal"]
     ordering = "-id"
+
+    def get_queryset(self):
+        return GoalComment.objects.filter(user=self.request.user)
+
