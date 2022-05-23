@@ -4,7 +4,7 @@ from django.core.validators import MinLengthValidator
 from django.contrib.postgres.indexes import HashIndex
 
 from core.models import User
-from goals.enums import Status, Priority
+from goals.enums import Status, Priority, BoardRole
 
 
 class HasCreatedUpdatedFieldsMixin(models.Model):
@@ -36,6 +36,7 @@ class GoalCategory(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
+    board = models.ForeignKey(to='Board', verbose_name="Доска", on_delete=models.PROTECT, related_name="categories")
     title = models.CharField(verbose_name="Название", max_length=255)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
     created = models.DateTimeField(verbose_name="Дата создания")
@@ -66,3 +67,35 @@ class GoalComment(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
     goal = models.ForeignKey(to=Goal, on_delete=models.CASCADE, related_name='comments', related_query_name='comments',
                              verbose_name='Цель')
     text = models.TextField(validators=[MinLengthValidator(1)])
+
+
+class Board(HasCreatedUpdatedFieldsMixin):
+    class Meta:
+        verbose_name = "Доска"
+        verbose_name_plural = "Доски"
+
+    title = models.CharField(verbose_name="Название", max_length=255)
+    is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
+
+
+class BoardParticipant(HasCreatedUpdatedFieldsMixin):
+    class Meta:
+        unique_together = ("board", "user")
+        verbose_name = "Участник"
+        verbose_name_plural = "Участники"
+
+    board = models.ForeignKey(
+        Board,
+        verbose_name="Доска",
+        on_delete=models.PROTECT,
+        related_name="participants",
+    )
+    user = models.ForeignKey(
+        User,
+        verbose_name="Пользователь",
+        on_delete=models.PROTECT,
+        related_name="participants",
+    )
+    role = models.PositiveSmallIntegerField(
+        verbose_name="Роль", choices=BoardRole.choices, default=BoardRole.owner
+    )
