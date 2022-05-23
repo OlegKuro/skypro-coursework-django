@@ -24,6 +24,9 @@ class HasCreatedUpdatedFieldsMixin(models.Model):
 class HasAuthorMixin(models.Model):
     class Meta:
         abstract = True
+        indexes = (
+            HashIndex(fields=('user',)),
+        )
 
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
 
@@ -32,9 +35,6 @@ class GoalCategory(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
-        indexes = (
-            HashIndex(fields=('user',)),
-        )
 
     title = models.CharField(verbose_name="Название", max_length=255)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
@@ -61,18 +61,8 @@ class Goal(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
         verbose_name="Приоритет", choices=Priority.choices, default=Priority.medium
     )
 
-    class Meta:
-        indexes = (
-            HashIndex(fields=('user',)),
-        )
-
 
 class GoalComment(HasCreatedUpdatedFieldsMixin, HasAuthorMixin):
     goal = models.ForeignKey(to=Goal, on_delete=models.CASCADE, related_name='comments', related_query_name='comments',
                              verbose_name='Цель')
     text = models.TextField(validators=[MinLengthValidator(1)])
-
-    class Meta:
-        indexes = (
-            HashIndex(fields=('user',)),
-        )
