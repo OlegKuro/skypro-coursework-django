@@ -169,4 +169,4 @@ class BoardListView(ListAPIView):
     ordering = ["title"]
 
     def get_queryset(self):
-        return Board.objects.filter(user=self.request.user, is_deleted=False)
+        return Board.objects.filter(participants__user=self.request.user, is_deleted=False)
