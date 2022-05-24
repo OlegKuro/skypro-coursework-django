@@ -19,8 +19,9 @@ class BoardRole(models.IntegerChoices):
     writer = 2, "Редактор"
     reader = 3, "Читатель"
 
+    @classmethod
     @property
-    def editable_choices(self):
-        choices = self.choices
-        choices.pop(0)
+    def editable_choices(cls):
+        choices = cls.choices
+        cls.choices.pop(0)
         return choices
