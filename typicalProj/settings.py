@@ -40,6 +40,12 @@ PROJECT_APPS = [
     'goals',
 ]
 
+VENDOR_APPS = [
+    'rest_framework',
+    'social_django',
+    'django_filters',
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,10 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'social_django',
-    'django_filters',
-] + PROJECT_APPS
+] + PROJECT_APPS + VENDOR_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
